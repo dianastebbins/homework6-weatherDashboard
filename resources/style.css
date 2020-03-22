@@ -1,0 +1,9 @@
+* {
+    /* border: 1px solid black; */
+    margin: 5px auto; 
+    /* note that input or their buttons do not display correctly with this margin setting */
+}
+
+#test {
+    background: yellow;
+}

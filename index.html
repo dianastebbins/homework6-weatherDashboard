@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <!-- for homework 5, this did nothing obvious -->
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" /> -->
+    <!-- for homework 5, this had minimal effect, and I actually like the look better without it (font less squished) -->
+    <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" /> -->
+
+    <link rel="stylesheet" href="resources/style.css" />
+
+    <!-- these need to be in head to work properly -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+    <title>Weather Dashboard</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1 id="title-bar">Weather Dashboard</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3>Find weather details for:</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="City"
+                                aria-label="City" aria-describedby="basic-addon2" id="city-input">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="submit-btn">Go!</button>
+                                <button class="btn btn-outline-secondary" type="button" id="clear-btn">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="list-group" id="city-list">
+                            <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
+                            <a href="#" class="list-group-item list-group-item-action active">Porta ac consectetur
+                                ac</a>
+                            <a href="#" class="list-group-item list-group-item-action disabled">Vestibulum at eros</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3>Today's Conditions</h3>
+                        <h4 id="db-location">Location:</h4>
+                        <h5 id="db-temp">Temp: </h5>
+                        <h5 id="db-humidity">Humidity: </h5>
+                        <h5 id="db-wind">Wind Speed: </h5>
+                        <h5 id="db-uv">UV Index: <span class="badge" id="test">4.56</span></h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3>5 Day Forecast</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2" id="5day-1">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Date</h5>
+                                </div>
+                                <p class="mb-1">badge</p>
+                                <small>Temp: 0 *F</small>
+                                <small>Humidity: 50%</small>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-2" id="5day-2">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Date</h5>
+                                </div>
+                                <p class="mb-1">badge</p>
+                                <small>Temp: 0 *F</small>
+                                <small>Humidity: 50%</small>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-2" id="5day-3">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Date</h5>
+                                </div>
+                                <p class="mb-1">badge</p>
+                                <small>Temp: 0 *F</small>
+                                <small>Humidity: 50%</small>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-2" id="5day-4">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Date</h5>
+                                </div>
+                                <p class="mb-1">badge</p>
+                                <small>Temp: 0 *F</small>
+                                <small>Humidity: 50%</small>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-2" id="5day-5">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Date</h5>
+                                </div>
+                                <p class="mb-1">badge</p>
+                                <small>Temp: 0 *F</small>
+                                <small>Humidity: 50%</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="resources/script.js"></script>
+</body>
+
+</html>
