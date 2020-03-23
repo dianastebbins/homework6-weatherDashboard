@@ -88,6 +88,7 @@ $("#submit-btn").on("click", function () {
     if (cityName === "") {
         return;
     }
+    $("#city-input").val("");
     makeAPICalls(cityName);
 })
 // OR
@@ -101,7 +102,7 @@ $(".searched-city").on("click", function () {
 $("#clear-btn").on("click", function () {
     console.log("clear-btn onclick");
     // maybe confirm first
-    if(confirm("Are you sure you want to remove the city list?")){
+    if (confirm("Are you sure you want to remove the city list?")) {
         // clear city-list, including from local Storage
         cityList = [];
         localStorage.setItem(lsKey, JSON.stringify(cityList));
