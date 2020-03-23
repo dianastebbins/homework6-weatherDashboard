@@ -22,16 +22,29 @@ var lsKey = "city-list"
 var cityList = [];
 
 function refreshCityList() {
-    console.log("refreshCityList;")
-    // When web app begins
     //     retrieve city list from local storage
     cityList = JSON.parse(localStorage.getItem(lsKey)) || [];
-    console.log(cityList);
+    
     //     dynamically create city list on screen
+    var cityListEl = $("#city-list");
+    cityListEl.empty();
+
+    for (let i = 0; i < cityList.length; i++) {
+        // for each city in the list...
+        const city = cityList[i];
+        
+        // create a new city element with placeholder link
+        var newCityEl = $("<a>");
+        newCityEl.attr("href", "#");
+        newCityEl.addClass("list-group-item list-group-item-action searched-city");
+        newCityEl.text(city);
+
+        // and add new city element to the list div
+        cityListEl.append(newCityEl);
+    }
 }
 
 function makeAPICalls(cityName) {
-    console.log("makeAPICalls with " + cityName);
     // First API call
     //     Use city as parameter to API search for most of basic info
     displayCurrentConditions();
@@ -47,7 +60,6 @@ function makeAPICalls(cityName) {
 }
 
 function displayCurrentConditions() {
-    console.log("displayCurrentConditions");
     // First API call
     //     display date
     //     display city name
@@ -57,14 +69,12 @@ function displayCurrentConditions() {
 }
 
 function displayUVIndex() {
-    console.log("displayUVIndex");
     // Second API call
     //     pull uv index for display
     //     change class(?) on display item according to index color schema (1&2, 3&4, 5&6, 7&8, 9&10 ???)
 }
 
 function display5DayForecast() {
-    console.log("display5DayForecast");
     // Third API call
     //     response has data for every 3 hours, using noon times for each day of extended forecast, filter out 5 pertinent records from response
     //     pull temp and humidity for display
@@ -72,7 +82,6 @@ function display5DayForecast() {
 }
 
 function saveSearchParameter(cityName) {
-    console.log("saveSearchParameter " + cityName);
     // When display is built
     //     Add city to city list object and save to local Storage
     cityList.push(cityName);
@@ -81,11 +90,10 @@ function saveSearchParameter(cityName) {
 }
 
 $("#submit-btn").on("click", function () {
-    console.log("submit-btn onclick");
     // When city entered and Go! clicked
-    // validate text was entered, exit if nothing
     var cityName = $("#city-input").val();
     if (cityName === "") {
+        // validate text was entered, exit if nothing
         return;
     }
     $("#city-input").val("");
@@ -93,15 +101,12 @@ $("#submit-btn").on("click", function () {
 })
 // OR
 $(".searched-city").on("click", function () {
-    console.log("searched-city onclick");
     // When city of city list is clicked
     var cityName = $(this).text();
     makeAPICalls(cityName);
 })
 
 $("#clear-btn").on("click", function () {
-    console.log("clear-btn onclick");
-    // maybe confirm first
     if (confirm("Are you sure you want to remove the city list?")) {
         // clear city-list, including from local Storage
         cityList = [];
