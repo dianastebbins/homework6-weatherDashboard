@@ -1,63 +1,56 @@
+
 $(document).ready(function () {
-    // IDs of html:
-    // titleBar
-    // city-input - used
-    // submit-btn - used
-    // clear-btn - used
-    // city-list - used
-    // db-current
-    // db-location
-    // db-temp
-    // db-humidity
-    // db-wind
-    // db-uv
-    // 5day-1
-    // 5day-2
-    // 5day-3
-    // 5day-4
-    // 5day-5
-
-    // classes of html:
-    // searched-city
-
-    var lsKey = "city-list"
     var cityList = [];
+    var lsKey = "city-list"
 
     var apiKey = "aac6f7e9b00a366d117a449f1b8be6f8";
-    // get temp in F by using units=imperial
-    var cityQueryURL = "http://api.openweathermap.org/data/2.5/weather?units=imperial&appid=" + apiKey;
     var uvQueryURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey;
-    var fiveDayQueryURL = "http://api.openweathermap.org/data/2.5/forecast?appid=" + apiKey;
+    var cityQueryURL = "http://api.openweathermap.org/data/2.5/weather?units=imperial&appid=" + apiKey;     // get temp in F by using units=imperial
+    var fiveDayQueryURL = "http://api.openweathermap.org/data/2.5/forecast?units=imperial&appid=" + apiKey; // get temp in F by using units=imperial
 
-    var latitude = 0;
-    var longitude = 0;
+    function setTime() {
+        // initial setting of time when page loads up
+        var rightNow = moment();
+        $("#time-stamp").text(rightNow.format("ddd, h:mmA"));
+
+        // repeated updates for time
+        var timerInterval = setInterval(function () {
+            rightNow = moment();
+            $("#time-stamp").text(rightNow.format("ddd, h:mmA"));
+        }, 60000);
+    }
 
     function refreshCityList() {
-        // console.log("refreshCityList");
+        console.log("refreshCityList");
         //     retrieve city list from local storage
         cityList = JSON.parse(localStorage.getItem(lsKey)) || [];
 
         //     dynamically create city list on screen
         var cityListEl = $("#city-list");
         cityListEl.empty();
-        
+        console.log("refreshCityList 2");
+
         for (let i = 0; i < cityList.length; i++) {
             // for each city in the list...
             const city = cityList[i];
-            
+
             // create a new city element with placeholder link
             var newCityEl = $("<a>");
             newCityEl.attr("href", "#");
             newCityEl.addClass("list-group-item list-group-item-action searched-city");
             newCityEl.text(city);
+
+            // and add the new element to the page
             cityListEl.prepend(newCityEl);
         }
+        console.log("refreshCityList 3");
+
     }
 
     function makeAPICalls(cityName) {
-        console.log("makeAPICalls with " + cityName);
+        // console.log("makeAPICalls with " + cityName);
         // First API call
-        //     Use city as parameter to API search for most of basic info: &q=Hell
+        //     Use city as parameter to API search for most of basic info:
         $.ajax({
             url: cityQueryURL + "&q=" + cityName,
             method: "GET"
@@ -66,80 +59,79 @@ $(document).ready(function () {
             displayCurrentConditions(conditionsResponse);
 
             // Second API call
-            //     Use long/lat of response to API search for uv index
+            //     Use long/lat of response to above API search for uv index
             $.ajax({
-                url: uvQueryURL + "&lat=" + latitude + "&lon=" + longitude,
+                url: uvQueryURL + "&lat=" + conditionsResponse.coord.lat + "&lon=" + conditionsResponse.coord.lon,
                 method: "GET"
             }).then(function (uvResponse) {
                 console.log(uvResponse);
                 displayUVIndex(uvResponse);
+
+                // Third API call
+                //     Use city as parameter to API search for 5 day forecast:
+                $.ajax({
+                    url: fiveDayQueryURL + "&q=" + cityName,
+                    method: "GET"
+                }).then(function (fiveDayResponse) {
+                    console.log(fiveDayResponse);
+                    display5DayForecast(fiveDayResponse);
+                })
             })
 
-            // Third API call
-            //     Use city as parameter to API search for 5 day forecast: &q=Port Ludlow
-            // fiveDayQueryURL += "&q=" + cityName;
-            $.ajax({
-                url: fiveDayQueryURL + "&q=" + cityName + "&lat=" + latitude + "&lon=" + longitude,
-                method: "GET"
-            }).then(function (fiveDayResponse) {
-                console.log(fiveDayResponse);
-                display5DayForecast();
-            })
+            // use city name from response so it is properly capitalized
+            saveSearchParameter(conditionsResponse.name);
         });
 
-        // update cityName so it is properly capitalized
-        // cityName = cityNameFromResponse;
-        saveSearchParameter(cityName);
     }
 
     function displayCurrentConditions(response) {
         // console.log("displayCurrentConditions");
         //     display date
-        //     display city name, date, current condition and appropriate icon
+        $("#time-stamp").removeAttr("hidden");
+
+        //     display city name, current condition and appropriate icon
         $("#db-current").text("Current: " + response.weather[0].main);
         var iconUrl = "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"
         $("#db-icon").attr("src", iconUrl);
         $("#db-location").text(response.name);
 
         //     pull temp, humidity and wind speed for display
-        $("#db-temp").text("Temperature: " + response.main.temp + " F");
+        $("#db-temp").text("Temp: " + response.main.temp + " F");
         $("#db-humidity").text("Humidity: " + response.main.humidity + "%");
         $("#db-wind").text("Wind: " + response.wind.speed + " knots");
 
-        // pull lat and long for later
-        latitude = response.coord.lat;
-        longitude = response.coord.lon;
+        // // pull lat and long for later
+        // latitude = response.coord.lat;
+        // longitude = response.coord.lon;
     }
 
     function displayUVIndex(response) {
-        console.log("displayUVIndex " + response.value);
+        // console.log("displayUVIndex " + response.value);
+        $("#db-uv-header").removeAttr("hidden");
+
         //     pull uv index for display
         var uvIndexNumeric = parseFloat(response.value);
-        $("#db-uv").text(uvIndexNumeric);
+        $("#db-uv").text(" " + uvIndexNumeric);
 
         // clear out class for visual uv indicator and reset based on new value
         $("#db-uv").removeClass("uv012 uv34 uv56 uv789 uv10plus");
         console.log(uvIndexNumeric);
-        if(uvIndexNumeric >= 10.00){
-            console.log("Here 10");
+        if (uvIndexNumeric >= 10.00) {
             $("#db-uv").addClass("uv10plus");
-        } else if(uvIndexNumeric >= 7.00){
-            console.log("Here 7");
+        } else if (uvIndexNumeric >= 7.00) {
             $("#db-uv").addClass("uv789");
-        } else if (uvIndexNumeric >= 5.00 ){
-            console.log("Here 5");
+        } else if (uvIndexNumeric >= 5.00) {
             $("#db-uv").addClass("uv56");
         } else if (uvIndexNumeric >= 3.00) {
-            console.log("Here 3");
             $("#db-uv").addClass("uv34");
         } else {
-            console.log("Here 0");
             $("#db-uv").addClass("uv012");
         }
     }
 
-    function display5DayForecast() {
+    function display5DayForecast(response) {
         // console.log("display5DayForecast");
+        $("#five-day-header").text("5 Day Forecast");
         // Third API call
         //     response has data for every 3 hours, using noon times for each day of extended forecast, filter out 5 pertinent records from response
         //     pull temp and humidity for display
@@ -219,7 +211,7 @@ $(document).ready(function () {
         makeAPICalls(cityName);
     })
     // OR
-    $(".city-list").on("click", function () {
+    $("#city-list").on("click", "a.searched-city", function () {
         console.log("searched-city clicked");
         console.log($(this).text());
         // When city of city list is clicked
@@ -228,13 +220,14 @@ $(document).ready(function () {
     })
 
     $("#clear-btn").on("click", function () {
-        if (confirm("Are you sure you want to remove the city list?")) {
-            // clear city-list, including from local Storage
-            cityList = [];
-            localStorage.setItem(lsKey, JSON.stringify(cityList));
-            refreshCityList();
-        }
+        // if (confirm("Are you sure you want to remove the city list?")) {
+        // clear city-list, including from local Storage
+        cityList = [];
+        localStorage.setItem(lsKey, JSON.stringify(cityList));
+        refreshCityList();
+        // }
     })
 
+    setTime();
     refreshCityList();
 })
