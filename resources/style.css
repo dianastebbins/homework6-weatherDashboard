@@ -4,6 +4,23 @@
     /* note that input or their buttons do not display correctly with this margin setting */
 }
 
-#test {
+.uv012 {
+    background: greenyellow;
+}
+
+.uv34 {
     background: yellow;
+}
+
+.uv56 {
+    background: orange;
+}
+
+.uv789 {
+    background: red;
+}
+
+.uv10plus {
+    background: purple;
+    color: white;
 }

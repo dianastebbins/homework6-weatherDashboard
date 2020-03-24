@@ -105,6 +105,7 @@ url to deployed app:
 
 ## Credits
 Requirements copied from provided Homework files of Full Stack Coding Bootcamp.
+The site http://www.theozonehole.com/uvindex.htm for UV Index rankings and color scheme
 
 ## License
 
