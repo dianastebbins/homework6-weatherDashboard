@@ -119,34 +119,78 @@ $(document).ready(function () {
     }
 
     function display5DayForecast(response) {
-        // console.log("display5DayForecast");
+        console.log("display5DayForecast");
         $("#five-day-header").removeAttr("hidden");
         $(".card-group").removeAttr("hidden");
         
-    //     <!-- <div class="list-group">
-    //     <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-    //         <div class="d-flex w-100 justify-content-between">
-    //             <h5 class="mb-1">Date</h5>
-    //         </div>
-    //          <small>Clear</small>
-    //         <p class="mb-1">badge</p>
-    //         <small>Temp: 0 *F</small>
-    //         <small>Humidity: 50%</small>
-    //     </a>
+    //     <!-- <div class="card-header">
+    //     Date
+    // </div>
+    // <div class="card-body">
+    //     <h5 class="card-title">Temp</h5>
+    //     <p class="card-text">Humidity</p>
+    // </div>
+    // <img class="card-img-top" src="" alt="Card image cap">
+    // <div class="card-footer">
+    //     <small class="text-muted">Condition</small>
     // </div> -->
 
         // find index of noon 2020-mm-dd 12:00:00
 
         // id = 5day-1
         // loop through every 8th response and create an element of 5 Day Forecast
-        // var newDiv1El = $("<div>").addClass("list-group");
+        var newDivHeaderEl = $("<div>").addClass("card-header").text("Date");
+        console.log("display5DayForecast 2");
+        
+        var newDivBodyEl = $("<div>").addClass("card-body");
+        var newH5TitleEl = $("<h5>").addClass("card-title").text("Temp: " + response.list[0].main.temp + " F");
+        var newPTextEl = $("<p>").addClass("card-text").text("Humidity: " + response.list[0].main.humidity + "%");
+        newDivBodyEl.append(newH5TitleEl);
+        newDivBodyEl.append(newPTextEl);
+        console.log("display5DayForecast 3");
+        
+        var iconUrl = "http://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png"
+        var newImgEl = $("<img>").attr("src", iconUrl);
+        console.log("display5DayForecast 4");
+        
+        var newDivFooterEl = $("<div>").addClass("card-footer");
+        var newConditionEl = $("<small>").addClass("text-muted").text(response.list[0].weather[0].main);
+        newDivFooterEl.append(newConditionEl);
+        console.log("display5DayForecast 5");
+        
+        $("#5day-1").append(newDivHeaderEl);
+        $("#5day-1").append(newDivBodyEl);
+        $("#5day-1").append(newImgEl);
+        $("#5day-1").append(newDivFooterEl);
+        
+        $("#5day-1").removeAttr("hidden");
+        console.log("display5DayForecast 6");
+        $("#5day-2").append(newDivHeaderEl);
+        $("#5day-2").append(newDivBodyEl);
+        $("#5day-2").append(newImgEl);
+        $("#5day-2").append(newDivFooterEl);
+        $("#5day-2").removeAttr("hidden");
+        $("#5day-3").append(newDivHeaderEl);
+        $("#5day-3").append(newDivBodyEl);
+        $("#5day-3").append(newImgEl);
+        $("#5day-3").append(newDivFooterEl);
+        $("#5day-3").removeAttr("hidden");
+        $("#5day-4").append(newDivHeaderEl);
+        $("#5day-4").append(newDivBodyEl);
+        $("#5day-4").append(newImgEl);
+        $("#5day-4").append(newDivFooterEl);
+        $("#5day-4").removeAttr("hidden");
+        $("#5day-5").append(newDivHeaderEl);
+        $("#5day-5").append(newDivBodyEl);
+        $("#5day-5").append(newImgEl);
+        $("#5day-5").append(newDivFooterEl);
+        $("#5day-5").removeAttr("hidden");
+        
+
         // var newAEl = $("<a>").addClass("list-group-item list-group-item-action flex-column align-items-start").attr("href", "#");
         // // var newDiv2El = $("<div>").addClass("d-flex w-100 justify-content-between");
         // var newH5El = $("<h5>").addClass("mb-1").text(response.list[0].dt_txt);
-        // var newConditionEl = $("<small>").text(response.list[0].weather[0].main);
         
-        // var iconUrl = "http://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png"
-        // var newImgEl = $("<img>").attr("src", iconUrl);
         // var newTempEl = $("<small>").text("Temp: " + response.list[0].main.temp + " F");
         // var newHumidityEl = $("<small>").text("Humidity: " + response.list[0].main.humidity + "%");
 
