@@ -1,6 +1,5 @@
 
 $(document).ready(function () {
-    var cityList = [];
     var lsKey = "city-list"
 
     var apiKey = "aac6f7e9b00a366d117a449f1b8be6f8";
@@ -21,15 +20,14 @@ $(document).ready(function () {
     }
 
     function refreshCityList() {
-        console.log("refreshCityList");
+        // console.log("refreshCityList");
         //     retrieve city list from local storage
-        cityList = JSON.parse(localStorage.getItem(lsKey)) || [];
+        var cityList = JSON.parse(localStorage.getItem(lsKey)) || [];
 
         //     dynamically create city list on screen
         var cityListEl = $("#city-list");
         cityListEl.empty();
-        console.log("refreshCityList 2");
-
+        
         for (let i = 0; i < cityList.length; i++) {
             // for each city in the list...
             const city = cityList[i];
@@ -43,14 +41,11 @@ $(document).ready(function () {
             // and add the new element to the page
             cityListEl.prepend(newCityEl);
         }
-        console.log("refreshCityList 3");
-
     }
 
     function makeAPICalls(cityName) {
         // console.log("makeAPICalls with " + cityName);
-        // First API call
-        //     Use city as parameter to API search for most of basic info:
+        // First API call...Use city as parameter to API search for most of basic info:
         $.ajax({
             url: cityQueryURL + "&q=" + cityName,
             method: "GET"
@@ -58,8 +53,7 @@ $(document).ready(function () {
             console.log(conditionsResponse);
             displayCurrentConditions(conditionsResponse);
 
-            // Second API call
-            //     Use long/lat of response to above API search for uv index
+            // Second API call...Use long/lat of response to above API search for uv index
             $.ajax({
                 url: uvQueryURL + "&lat=" + conditionsResponse.coord.lat + "&lon=" + conditionsResponse.coord.lon,
                 method: "GET"
@@ -67,8 +61,7 @@ $(document).ready(function () {
                 console.log(uvResponse);
                 displayUVIndex(uvResponse);
 
-                // Third API call
-                //     Use city as parameter to API search for 5 day forecast:
+                // Third API call...Use city as parameter to API search for 5 day forecast:
                 $.ajax({
                     url: fiveDayQueryURL + "&q=" + cityName,
                     method: "GET"
@@ -78,7 +71,7 @@ $(document).ready(function () {
                 })
             })
 
-            // use city name from response so it is properly capitalized
+            // save city name from response so it is properly capitalized
             saveSearchParameter(conditionsResponse.name);
         });
 
@@ -90,19 +83,15 @@ $(document).ready(function () {
         $("#time-stamp").removeAttr("hidden");
 
         //     display city name, current condition and appropriate icon
-        $("#db-current").text("Current: " + response.weather[0].main);
         var iconUrl = "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"
         $("#db-icon").attr("src", iconUrl);
+        $("#db-current").text("Current: " + response.weather[0].main);
         $("#db-location").text(response.name);
 
         //     pull temp, humidity and wind speed for display
         $("#db-temp").text("Temp: " + response.main.temp + " F");
         $("#db-humidity").text("Humidity: " + response.main.humidity + "%");
         $("#db-wind").text("Wind: " + response.wind.speed + " knots");
-
-        // // pull lat and long for later
-        // latitude = response.coord.lat;
-        // longitude = response.coord.lon;
     }
 
     function displayUVIndex(response) {
@@ -131,69 +120,55 @@ $(document).ready(function () {
 
     function display5DayForecast(response) {
         // console.log("display5DayForecast");
-        $("#five-day-header").text("5 Day Forecast");
-        // Third API call
-        //     response has data for every 3 hours, using noon times for each day of extended forecast, filter out 5 pertinent records from response
-        //     pull temp and humidity for display
-        // {
-        //     "cod": "200",
-        //     "message": 0,
-        //     "cnt": 40,
-        //     "list": [
-        //         {
-        //             "dt": 1584748800,
-        //             "main": {
-        //                 "temp": 287.52,
-        //                 "feels_like": 285.05,
-        //                 "temp_min": 283.82,
-        //                 "temp_max": 287.52,
-        //                 "pressure": 1023,
-        //                 "sea_level": 1023,
-        //                 "grnd_level": 1020,
-        //                 "humidity": 68,
-        //                 "temp_kf": 3.7
-        //             },
-        //             "weather": [
-        //                 {
-        //                     "id": 800,
-        //                     "main": "Clear",
-        //                     "description": "clear sky",
-        //                     "icon": "01d"
-        //                 }
-        //             ],
-        //             "clouds": {
-        //                 "all": 0
-        //             },
-        //             "wind": {
-        //                 "speed": 3.05,
-        //                 "deg": 333
-        //             },
-        //             "sys": {
-        //                 "pod": "d"
-        //             },
-        //             "dt_txt": "2020-03-21 00:00:00"
-        //         },
-        //     ],
-        //     "city": {
-        //         "id": 5807228,
-        //         "name": "Port Ludlow",
-        //         "coord": {
-        //             "lat": 47.9254,
-        //             "lon": -122.6835
-        //         },
-        //         "country": "US",
-        //         "population": 2603,
-        //         "timezone": -25200,
-        //         "sunrise": 1584713540,
-        //         "sunset": 1584757418
-        //     }    
-        //     dynamically build list-group item and populate with above data, plus condition appropriate icon
+        $("#five-day-header").removeAttr("hidden");
+        $(".card-group").removeAttr("hidden");
+        
+    //     <!-- <div class="list-group">
+    //     <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+    //         <div class="d-flex w-100 justify-content-between">
+    //             <h5 class="mb-1">Date</h5>
+    //         </div>
+    //          <small>Clear</small>
+    //         <p class="mb-1">badge</p>
+    //         <small>Temp: 0 *F</small>
+    //         <small>Humidity: 50%</small>
+    //     </a>
+    // </div> -->
+
+        // find index of noon 2020-mm-dd 12:00:00
+
+        // id = 5day-1
+        // loop through every 8th response and create an element of 5 Day Forecast
+        // var newDiv1El = $("<div>").addClass("list-group");
+        // var newAEl = $("<a>").addClass("list-group-item list-group-item-action flex-column align-items-start").attr("href", "#");
+        // // var newDiv2El = $("<div>").addClass("d-flex w-100 justify-content-between");
+        // var newH5El = $("<h5>").addClass("mb-1").text(response.list[0].dt_txt);
+        // var newConditionEl = $("<small>").text(response.list[0].weather[0].main);
+        
+        // var iconUrl = "http://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png"
+        // var newImgEl = $("<img>").attr("src", iconUrl);
+        // var newTempEl = $("<small>").text("Temp: " + response.list[0].main.temp + " F");
+        // var newHumidityEl = $("<small>").text("Humidity: " + response.list[0].main.humidity + "%");
+
+        // // newDiv2El.append(newH5El);
+        // newAEl.append(newH5El);
+        // // newAEl.append(newDiv2El);
+        // newAEl.append(newConditionEl);
+        // newAEl.append(newImgEl);
+        // newAEl.append(newTempEl);
+        // newAEl.append(newHumidityEl);
+        // newDiv1El.append(newAEl);
+        // // $("#5day-1").append(newDiv1El);
+        // // $("#5day-2").append(newDiv1El);
+        // // $("#5day-3").append(newDiv1El);
+        // // $("#5day-4").append(newDiv1El);
+        // // $("#5day-5").append(newDiv1El);
     }
 
     function saveSearchParameter(cityName) {
         console.log("saveSearchParameter with " + cityName);
-        // When display is built
         //     Add city to city list object and save to local Storage
+        var cityList = JSON.parse(localStorage.getItem(lsKey)) || [];
         cityList.push(cityName);
         localStorage.setItem(lsKey, JSON.stringify(cityList));
         refreshCityList();
@@ -221,9 +196,8 @@ $(document).ready(function () {
 
     $("#clear-btn").on("click", function () {
         // if (confirm("Are you sure you want to remove the city list?")) {
-        // clear city-list, including from local Storage
-        cityList = [];
-        localStorage.setItem(lsKey, JSON.stringify(cityList));
+        // clear city-list from local Storage
+        localStorage.removeItem(lsKey);
         refreshCityList();
         // }
     })
