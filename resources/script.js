@@ -82,7 +82,7 @@ $(document).ready(function () {
         $("#time-stamp").removeAttr("hidden");
 
         //     display city name, current condition and appropriate icon
-        var iconUrl = "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"
+        var iconUrl = "https://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"
         $("#db-icon").attr("src", iconUrl);
         $("#db-current").text("Current: " + response.weather[0].main);
         $("#db-location").text(response.name);
@@ -150,7 +150,7 @@ $(document).ready(function () {
             newDivBodyEl.append(newH5TitleEl);
             newDivBodyEl.append(newPTextEl);
             
-            var iconUrl = "http://openweathermap.org/img/wn/" + responseArray[i].weather[0].icon + "@2x.png"
+            var iconUrl = "https://openweathermap.org/img/wn/" + responseArray[i].weather[0].icon + "@2x.png"
             var newImgEl = $("<img>").attr("src", iconUrl);
             
             var newDivFooterEl = $("<div>").addClass("card-header");
