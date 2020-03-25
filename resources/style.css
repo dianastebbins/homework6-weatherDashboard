@@ -1,7 +1,19 @@
-* {
+/* * { */
     /* border: 1px solid black; */
-    margin: 5px auto; 
+    /* margin: 5px auto;  */
     /* note that input or their buttons do not display correctly with this margin setting */
+/* } */
+
+h3 {
+    font-size: 20px;
+}
+
+h5{
+    font-size: 16px;
+}
+
+.card-header, .card-footer {
+    background: burlywood;
 }
 
 .uv012 {
@@ -23,4 +35,15 @@
 .uv10plus {
     background: purple;
     color: white;
+}
+
+#city-list {
+    margin: 5px auto;
+}
+
+#title-bar {
+    background: burlywood;
+    margin: 5px auto;
+    text-align: center;
+    
 }

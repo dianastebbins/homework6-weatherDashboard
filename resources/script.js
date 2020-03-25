@@ -1,6 +1,8 @@
 
 $(document).ready(function () {
-    var lsKey = "city-list"
+    var cityListKey = "city-list";
+    var lastSearchKey = "last-search";
+    var searchLastKnown = true;
 
     var apiKey = "aac6f7e9b00a366d117a449f1b8be6f8";
     var uvQueryURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey;
@@ -19,15 +21,20 @@ $(document).ready(function () {
         }, 60000);
     }
 
+    // function setBackground() {
+    //     $("#conditions").attr("background", red);
+    //     //https://image.shutterstock.com/image-photo/sunset-sky-sun-shining-through-260nw-1205399572.jpg
+    // }
+
     function refreshCityList() {
         // console.log("refreshCityList");
         //     retrieve city list from local storage
-        var cityList = JSON.parse(localStorage.getItem(lsKey)) || [];
+        var cityList = JSON.parse(localStorage.getItem(cityListKey)) || [];
 
         //     dynamically create city list on screen
         var cityListEl = $("#city-list");
         cityListEl.empty();
-        
+
         for (let i = 0; i < cityList.length; i++) {
             // for each city in the list...
             const city = cityList[i];
@@ -41,6 +48,12 @@ $(document).ready(function () {
             // and add the new element to the page
             cityListEl.prepend(newCityEl);
         }
+    }
+
+    function initializeLastSearched() {
+        var lastSearch = localStorage.getItem(lastSearchKey);
+        console.log(lastSearch);
+        makeAPICalls(lastSearch);
     }
 
     function makeAPICalls(cityName) {
@@ -122,59 +135,58 @@ $(document).ready(function () {
         console.log("display5DayForecast");
         $("#five-day-header").removeAttr("hidden");
         $(".card-group").removeAttr("hidden");
-        
-    //     <!-- <div class="card-header">
-    //     Date
-    // </div>
-    // <div class="card-body">
-    //     <h5 class="card-title">Temp</h5>
-    //     <p class="card-text">Humidity</p>
-    // </div>
-    // <img class="card-img-top" src="" alt="Card image cap">
-    // <div class="card-footer">
-    //     <small class="text-muted">Condition</small>
-    // </div> -->
+
+        // For reference, this method should build cards that look like this and then append them to <div class="card" id="5day-1"></div>
+        // <div class="card-header">
+        //     Date
+        // </div>
+        // <div class="card-body">
+        //     <h5 class="card-title">Temp</h5>
+        //     <p class="card-text">Humidity</p>
+        // </div>
+        // <img class="card-img-top" src="" alt="Card image cap">
+        // <div class="card-footer">
+        //     <small class="text-muted">Condition</small>
+        // </div>
 
         // find index of noon 2020-mm-dd 12:00:00
 
         // id = 5day-1
         // loop through every 8th response and create an element of 5 Day Forecast
-        var newDivHeaderEl = $("<div>").addClass("card-header").text("Date");
-        console.log("display5DayForecast 2");
-        
+        var dateString = response.list[0].dt_txt;
+        var dateObj = new Date(dateString);
+        var momentObj = moment(dateObj);
+        var momentString = momentObj.format("ddd, h:mmA");
+        var newDivHeaderEl = $("<div>").addClass("card-header").text(momentString);
+
         var newDivBodyEl = $("<div>").addClass("card-body");
         var newH5TitleEl = $("<h5>").addClass("card-title").text("Temp: " + response.list[0].main.temp + " F");
         var newPTextEl = $("<p>").addClass("card-text").text("Humidity: " + response.list[0].main.humidity + "%");
         newDivBodyEl.append(newH5TitleEl);
         newDivBodyEl.append(newPTextEl);
-        console.log("display5DayForecast 3");
-        
+
         var iconUrl = "http://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png"
         var newImgEl = $("<img>").attr("src", iconUrl);
-        console.log("display5DayForecast 4");
-        
+
         var newDivFooterEl = $("<div>").addClass("card-footer");
         var newConditionEl = $("<small>").addClass("text-muted").text(response.list[0].weather[0].main);
         newDivFooterEl.append(newConditionEl);
-        console.log("display5DayForecast 5");
-        
+
+        var id = "#5day-" + 1;
+
         $("#5day-1").append(newDivHeaderEl);
         $("#5day-1").append(newDivBodyEl);
         $("#5day-1").append(newImgEl);
         $("#5day-1").append(newDivFooterEl);
-        
+
         $("#5day-1").removeAttr("hidden");
-        console.log("display5DayForecast 6");
+        id = "#5day-" + 2;
+
         $("#5day-2").append(newDivHeaderEl);
         $("#5day-2").append(newDivBodyEl);
         $("#5day-2").append(newImgEl);
         $("#5day-2").append(newDivFooterEl);
         $("#5day-2").removeAttr("hidden");
-        $("#5day-3").append(newDivHeaderEl);
-        $("#5day-3").append(newDivBodyEl);
-        $("#5day-3").append(newImgEl);
-        $("#5day-3").append(newDivFooterEl);
-        $("#5day-3").removeAttr("hidden");
         $("#5day-4").append(newDivHeaderEl);
         $("#5day-4").append(newDivBodyEl);
         $("#5day-4").append(newImgEl);
@@ -185,12 +197,20 @@ $(document).ready(function () {
         $("#5day-5").append(newImgEl);
         $("#5day-5").append(newDivFooterEl);
         $("#5day-5").removeAttr("hidden");
-        
+
+        id = "#5day-" + 3;
+        $(id).empty();
+        $(id).append(newDivHeaderEl);
+        $(id).append(newDivBodyEl);
+        $(id).append(newImgEl);
+        $(id).append(newDivFooterEl);
+        $(id).removeAttr("hidden");
+
 
         // var newAEl = $("<a>").addClass("list-group-item list-group-item-action flex-column align-items-start").attr("href", "#");
         // // var newDiv2El = $("<div>").addClass("d-flex w-100 justify-content-between");
         // var newH5El = $("<h5>").addClass("mb-1").text(response.list[0].dt_txt);
-        
+
         // var newTempEl = $("<small>").text("Temp: " + response.list[0].main.temp + " F");
         // var newHumidityEl = $("<small>").text("Humidity: " + response.list[0].main.humidity + "%");
 
@@ -211,10 +231,14 @@ $(document).ready(function () {
 
     function saveSearchParameter(cityName) {
         console.log("saveSearchParameter with " + cityName);
-        //     Add city to city list object and save to local Storage
-        var cityList = JSON.parse(localStorage.getItem(lsKey)) || [];
+        // save this cityName as the last known search
+        localStorage.removeItem(lastSearchKey);
+        localStorage.setItem(lastSearchKey, cityName);
+
+        //     Add city to existing city list object and update to local Storage
+        var cityList = JSON.parse(localStorage.getItem(cityListKey)) || [];
         cityList.push(cityName);
-        localStorage.setItem(lsKey, JSON.stringify(cityList));
+        localStorage.setItem(cityListKey, JSON.stringify(cityList));
         refreshCityList();
     }
 
@@ -241,11 +265,12 @@ $(document).ready(function () {
     $("#clear-btn").on("click", function () {
         // if (confirm("Are you sure you want to remove the city list?")) {
         // clear city-list from local Storage
-        localStorage.removeItem(lsKey);
+        localStorage.removeItem(cityListKey);
         refreshCityList();
         // }
     })
 
     setTime();
     refreshCityList();
+    initializeLastSearched();
 })
