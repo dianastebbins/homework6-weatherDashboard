@@ -44,7 +44,9 @@ $(document).ready(function () {
 
     function initializeLastSearched() {
         var lastSearch = localStorage.getItem(lastSearchKey);
-        makeAPICalls(lastSearch);
+        if(lastSearch !== null){
+            makeAPICalls(lastSearch);
+        }
     }
 
     function makeAPICalls(cityName) {
@@ -132,10 +134,21 @@ $(document).ready(function () {
         //     <large class="text-muted">Condition</large>
         // </div>
 
-        // start with 4th element (noon of "tomorrow") and loop through every 8th response 
-        var cardCounter = 1;
+        // find first element that is noon of "tomorrow" and remember its index
+        var startIndex = 0;
         var responseArray = response.list;
-        for (let i = 3; i < responseArray.length; i += 8) {
+        for (let i = 0; i < responseArray.length; i++) {
+            var dateString = responseArray[i].dt_txt;
+            var dateObj = new Date(dateString);
+            var momentObj = moment(dateObj);
+            if(startIndex === 0 && momentObj.hour() === 12 ){
+                startIndex = i;
+            }
+        }
+
+        // loop through every 8th response, beginning with startIndex
+        var cardCounter = 1;
+        for (let i = startIndex; i < responseArray.length; i += 8) {
             
             // create an element of 5 Day Forecast
             var dateString = responseArray[i].dt_txt;
@@ -182,7 +195,7 @@ $(document).ready(function () {
         }
 
         //     Add cityName to existing city list object and update to local Storage
-        // it is potentially be re-added here after being deleted above, but this re-add will move
+        // it is potentially being re-added here after being deleted above, this re-add forces
         // it to the top of the display list
         cityList.push(cityName);
         localStorage.setItem(cityListKey, JSON.stringify(cityList));
