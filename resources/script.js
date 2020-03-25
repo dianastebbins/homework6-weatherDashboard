@@ -173,8 +173,17 @@ $(document).ready(function () {
         localStorage.removeItem(lastSearchKey);
         localStorage.setItem(lastSearchKey, cityName);
 
-        //     Add cityName to existing city list object and update to local Storage
+        // check if cityName already exists in the list 
         var cityList = JSON.parse(localStorage.getItem(cityListKey)) || [];
+        var index = cityList.indexOf(cityName);
+        if(index >= 0) {
+            // if so remove it so a single city is in the list only once
+            cityList.splice(index, 1);
+        }
+
+        //     Add cityName to existing city list object and update to local Storage
+        // it is potentially be re-added here after being deleted above, but this re-add will move
+        // it to the top of the display list
         cityList.push(cityName);
         localStorage.setItem(cityListKey, JSON.stringify(cityList));
         refreshCityList();
