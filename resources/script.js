@@ -3,9 +3,9 @@ $(document).ready(function () {
     var lastSearchKey = "last-search";
     
     var apiKey = "aac6f7e9b00a366d117a449f1b8be6f8";
-    var uvQueryURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey;
-    var cityQueryURL = "http://api.openweathermap.org/data/2.5/weather?units=imperial&appid=" + apiKey;     // get temp in F by using units=imperial
-    var fiveDayQueryURL = "http://api.openweathermap.org/data/2.5/forecast?units=imperial&appid=" + apiKey; // get temp in F by using units=imperial
+    var uvQueryURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey;
+    var cityQueryURL = "https://api.openweathermap.org/data/2.5/weather?units=imperial&appid=" + apiKey;     // get temp in F by using units=imperial
+    var fiveDayQueryURL = "https://api.openweathermap.org/data/2.5/forecast?units=imperial&appid=" + apiKey; // get temp in F by using units=imperial
 
     function setTime() {
         // initial setting of time when page loads up
