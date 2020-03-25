@@ -146,87 +146,43 @@ $(document).ready(function () {
         // </div>
         // <img class="card-img-top" src="" alt="Card image cap">
         // <div class="card-footer">
-        //     <small class="text-muted">Condition</small>
+        //     <large class="text-muted">Condition</large>
         // </div>
 
-        // find index of noon 2020-mm-dd 12:00:00
-
-        // id = 5day-1
-        // loop through every 8th response and create an element of 5 Day Forecast
-        var dateString = response.list[0].dt_txt;
-        var dateObj = new Date(dateString);
-        var momentObj = moment(dateObj);
-        var momentString = momentObj.format("ddd, h:mmA");
-        var newDivHeaderEl = $("<div>").addClass("card-header").text(momentString);
-
-        var newDivBodyEl = $("<div>").addClass("card-body");
-        var newH5TitleEl = $("<h5>").addClass("card-title").text("Temp: " + response.list[0].main.temp + " F");
-        var newPTextEl = $("<p>").addClass("card-text").text("Humidity: " + response.list[0].main.humidity + "%");
-        newDivBodyEl.append(newH5TitleEl);
-        newDivBodyEl.append(newPTextEl);
-
-        var iconUrl = "http://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png"
-        var newImgEl = $("<img>").attr("src", iconUrl);
-
-        var newDivFooterEl = $("<div>").addClass("card-footer");
-        var newConditionEl = $("<small>").addClass("text-muted").text(response.list[0].weather[0].main);
-        newDivFooterEl.append(newConditionEl);
-
-        var id = "#5day-" + 1;
-
-        $("#5day-1").append(newDivHeaderEl);
-        $("#5day-1").append(newDivBodyEl);
-        $("#5day-1").append(newImgEl);
-        $("#5day-1").append(newDivFooterEl);
-
-        $("#5day-1").removeAttr("hidden");
-        id = "#5day-" + 2;
-
-        $("#5day-2").append(newDivHeaderEl);
-        $("#5day-2").append(newDivBodyEl);
-        $("#5day-2").append(newImgEl);
-        $("#5day-2").append(newDivFooterEl);
-        $("#5day-2").removeAttr("hidden");
-        $("#5day-4").append(newDivHeaderEl);
-        $("#5day-4").append(newDivBodyEl);
-        $("#5day-4").append(newImgEl);
-        $("#5day-4").append(newDivFooterEl);
-        $("#5day-4").removeAttr("hidden");
-        $("#5day-5").append(newDivHeaderEl);
-        $("#5day-5").append(newDivBodyEl);
-        $("#5day-5").append(newImgEl);
-        $("#5day-5").append(newDivFooterEl);
-        $("#5day-5").removeAttr("hidden");
-
-        id = "#5day-" + 3;
-        $(id).empty();
-        $(id).append(newDivHeaderEl);
-        $(id).append(newDivBodyEl);
-        $(id).append(newImgEl);
-        $(id).append(newDivFooterEl);
-        $(id).removeAttr("hidden");
-
-
-        // var newAEl = $("<a>").addClass("list-group-item list-group-item-action flex-column align-items-start").attr("href", "#");
-        // // var newDiv2El = $("<div>").addClass("d-flex w-100 justify-content-between");
-        // var newH5El = $("<h5>").addClass("mb-1").text(response.list[0].dt_txt);
-
-        // var newTempEl = $("<small>").text("Temp: " + response.list[0].main.temp + " F");
-        // var newHumidityEl = $("<small>").text("Humidity: " + response.list[0].main.humidity + "%");
-
-        // // newDiv2El.append(newH5El);
-        // newAEl.append(newH5El);
-        // // newAEl.append(newDiv2El);
-        // newAEl.append(newConditionEl);
-        // newAEl.append(newImgEl);
-        // newAEl.append(newTempEl);
-        // newAEl.append(newHumidityEl);
-        // newDiv1El.append(newAEl);
-        // // $("#5day-1").append(newDiv1El);
-        // // $("#5day-2").append(newDiv1El);
-        // // $("#5day-3").append(newDiv1El);
-        // // $("#5day-4").append(newDiv1El);
-        // // $("#5day-5").append(newDiv1El);
+        // start with 4th element (noon of "tomorrow") and loop through every 8th response 
+        var cardCounter = 1;
+        var responseArray = response.list;
+        for (let i = 3; i < responseArray.length; i += 8) {
+            
+            // create an element of 5 Day Forecast
+            var dateString = responseArray[i].dt_txt;
+            var dateObj = new Date(dateString);
+            var momentObj = moment(dateObj);
+            var momentString = momentObj.format("ddd, h:mmA");
+            var newDivHeaderEl = $("<div>").addClass("card-header").text(momentString);
+            
+            var newDivBodyEl = $("<div>").addClass("card-body");
+            var newH5TitleEl = $("<h5>").addClass("card-title").text("Temp: " + responseArray[i].main.temp + " F");
+            var newPTextEl = $("<p>").addClass("card-text").text("Humidity: " + responseArray[i].main.humidity + "%");
+            newDivBodyEl.append(newH5TitleEl);
+            newDivBodyEl.append(newPTextEl);
+            
+            var iconUrl = "http://openweathermap.org/img/wn/" + responseArray[i].weather[0].icon + "@2x.png"
+            var newImgEl = $("<img>").attr("src", iconUrl);
+            
+            var newDivFooterEl = $("<div>").addClass("card-header");
+            var newConditionEl = $("<large>").text(responseArray[i].weather[0].main);
+            newDivFooterEl.append(newConditionEl);
+            
+            var id = "#5day-" + cardCounter; // i.e. 5day-1, 5day-2, etc
+            $(id).empty();
+            $(id).append(newDivHeaderEl);
+            $(id).append(newDivBodyEl);
+            $(id).append(newImgEl);
+            $(id).append(newDivFooterEl);
+            $(id).removeAttr("hidden");
+            cardCounter++;
+        }
     }
 
     function saveSearchParameter(cityName) {
