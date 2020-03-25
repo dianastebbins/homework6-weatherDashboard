@@ -1,9 +1,7 @@
-
 $(document).ready(function () {
     var cityListKey = "city-list";
     var lastSearchKey = "last-search";
-    var searchLastKnown = true;
-
+    
     var apiKey = "aac6f7e9b00a366d117a449f1b8be6f8";
     var uvQueryURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey;
     var cityQueryURL = "http://api.openweathermap.org/data/2.5/weather?units=imperial&appid=" + apiKey;     // get temp in F by using units=imperial
@@ -21,13 +19,7 @@ $(document).ready(function () {
         }, 60000);
     }
 
-    // function setBackground() {
-    //     $("#conditions").attr("background", red);
-    //     //https://image.shutterstock.com/image-photo/sunset-sky-sun-shining-through-260nw-1205399572.jpg
-    // }
-
     function refreshCityList() {
-        // console.log("refreshCityList");
         //     retrieve city list from local storage
         var cityList = JSON.parse(localStorage.getItem(cityListKey)) || [];
 
@@ -52,18 +44,15 @@ $(document).ready(function () {
 
     function initializeLastSearched() {
         var lastSearch = localStorage.getItem(lastSearchKey);
-        console.log(lastSearch);
         makeAPICalls(lastSearch);
     }
 
     function makeAPICalls(cityName) {
-        // console.log("makeAPICalls with " + cityName);
         // First API call...Use city as parameter to API search for most of basic info:
         $.ajax({
             url: cityQueryURL + "&q=" + cityName,
             method: "GET"
         }).then(function (conditionsResponse) {
-            console.log(conditionsResponse);
             displayCurrentConditions(conditionsResponse);
 
             // Second API call...Use long/lat of response to above API search for uv index
@@ -71,7 +60,6 @@ $(document).ready(function () {
                 url: uvQueryURL + "&lat=" + conditionsResponse.coord.lat + "&lon=" + conditionsResponse.coord.lon,
                 method: "GET"
             }).then(function (uvResponse) {
-                console.log(uvResponse);
                 displayUVIndex(uvResponse);
 
                 // Third API call...Use city as parameter to API search for 5 day forecast:
@@ -79,7 +67,6 @@ $(document).ready(function () {
                     url: fiveDayQueryURL + "&q=" + cityName,
                     method: "GET"
                 }).then(function (fiveDayResponse) {
-                    console.log(fiveDayResponse);
                     display5DayForecast(fiveDayResponse);
                 })
             })
@@ -91,8 +78,7 @@ $(document).ready(function () {
     }
 
     function displayCurrentConditions(response) {
-        // console.log("displayCurrentConditions");
-        //     display date
+        //     show date
         $("#time-stamp").removeAttr("hidden");
 
         //     display city name, current condition and appropriate icon
@@ -108,16 +94,13 @@ $(document).ready(function () {
     }
 
     function displayUVIndex(response) {
-        // console.log("displayUVIndex " + response.value);
+        // show UV header info and pull uv index for display
         $("#db-uv-header").removeAttr("hidden");
-
-        //     pull uv index for display
         var uvIndexNumeric = parseFloat(response.value);
         $("#db-uv").text(" " + uvIndexNumeric);
 
         // clear out class for visual uv indicator and reset based on new value
         $("#db-uv").removeClass("uv012 uv34 uv56 uv789 uv10plus");
-        console.log(uvIndexNumeric);
         if (uvIndexNumeric >= 10.00) {
             $("#db-uv").addClass("uv10plus");
         } else if (uvIndexNumeric >= 7.00) {
@@ -132,7 +115,7 @@ $(document).ready(function () {
     }
 
     function display5DayForecast(response) {
-        console.log("display5DayForecast");
+        // show headers and card group
         $("#five-day-header").removeAttr("hidden");
         $(".card-group").removeAttr("hidden");
 
@@ -186,12 +169,11 @@ $(document).ready(function () {
     }
 
     function saveSearchParameter(cityName) {
-        console.log("saveSearchParameter with " + cityName);
         // save this cityName as the last known search
         localStorage.removeItem(lastSearchKey);
         localStorage.setItem(lastSearchKey, cityName);
 
-        //     Add city to existing city list object and update to local Storage
+        //     Add cityName to existing city list object and update to local Storage
         var cityList = JSON.parse(localStorage.getItem(cityListKey)) || [];
         cityList.push(cityName);
         localStorage.setItem(cityListKey, JSON.stringify(cityList));
@@ -199,7 +181,6 @@ $(document).ready(function () {
     }
 
     $("#submit-btn").on("click", function () {
-        // console.log("submit-btn clicked");
         // When city entered and Go! clicked
         var cityName = $("#city-input").val();
         if (cityName === "") {
@@ -211,8 +192,6 @@ $(document).ready(function () {
     })
     // OR
     $("#city-list").on("click", "a.searched-city", function () {
-        console.log("searched-city clicked");
-        console.log($(this).text());
         // When city of city list is clicked
         var cityName = $(this).text();
         makeAPICalls(cityName);

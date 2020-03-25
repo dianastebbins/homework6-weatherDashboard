@@ -13,7 +13,7 @@ h5{
 }
 
 .card-header, .card-footer {
-    background: burlywood;
+    background: lightcyan;
     text-align: center;
 }
 
@@ -43,8 +43,8 @@ h5{
 }
 
 #title-bar {
-    background: burlywood;
+    background: lightcyan;
+    border: 1px solid darkgrey;
     margin: 5px auto;
     text-align: center;
-    
 }
