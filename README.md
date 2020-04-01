@@ -99,7 +99,7 @@ When display is built
 ```
 url to deployed app:
 ```
-https://dianastebbins.github.io/homework6-weatherDashboard/.
+https://dianastebbins.github.io/homework6-weatherDashboard/
 
 ## Usage
 ```
