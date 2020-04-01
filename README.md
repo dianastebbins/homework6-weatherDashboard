@@ -97,8 +97,9 @@ When display is built
 
 ## Installation
 ```
-url to deployed app: https://dianastebbins.github.io/homework6-weatherDashboard/.
+url to deployed app:
 ```
+https://dianastebbins.github.io/homework6-weatherDashboard/.
 
 ## Usage
 ```
